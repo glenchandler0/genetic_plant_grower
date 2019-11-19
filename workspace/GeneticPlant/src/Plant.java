@@ -14,12 +14,11 @@ public class Plant implements EnvEntity {
 		numCells = 0;
 		totalHealth = 0;
 		
-		listOfCells.add(new PlantCell(Environment.map.length - 1, 10));
+		listOfCells.add(new PlantCell(this, Environment.map.length - 1, 10));
 	}
 	
 	public void step()
 	{
-		//TODO: Sort randomly here
 		// Reservoir sampling by generating ordered list of numbers
 		// randomly pick a number within length and use that as index
 		Random rand = new Random();
@@ -37,19 +36,19 @@ public class Plant implements EnvEntity {
 			//	this would also allow for the generic function to be void (TODO: add protected to plant?)
 			//	Might not be great, however, considering amount of meta plant info we might need.
 			//	Consider only returning object when necessary, (how it is now)
-			PlantCell newObject = listOfCells.get(picked_val).growAdjacent();
+			PlantCell newObject = listOfCells.get(picked_val).doAction();
 			if(newObject != null)
 			{
 				System.out.println("Object not null!");
 				listOfCells.add(newObject);
-				
-				//Kill spawning cell if its health drops <= 0
-				//should die right away to make room for other cell
-				if(listOfCells.get(picked_val).getHealth() <= 0)
-				{
-					Environment.map[listOfCells.get(picked_val).getX()][listOfCells.get(picked_val).getY()] = null;
-					listOfCells.set(picked_val, null); //Set to null as to preserve list integrity for reservoir sampling, will be removed later
-				}
+			}
+			
+			//Kill spawning cell if its health drops <= 0
+			//should die right away to make room for other cell
+			if(listOfCells.get(picked_val).getHealth() <= 0)
+			{
+				Environment.map[listOfCells.get(picked_val).getX()][listOfCells.get(picked_val).getY()] = null;
+				listOfCells.set(picked_val, null); //Set to null as to preserve list integrity for reservoir sampling, will be removed later
 			}
 			
 			numbers.remove(picked_index);
