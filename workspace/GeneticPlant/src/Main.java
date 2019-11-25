@@ -5,12 +5,19 @@ import java.io.IOException;
 public class Main {
 	public static void main(String[] args) throws IOException
 	{
-//		System.out.println("Hello world!");
+		System.out.println("Hello world!");
 		
+		//Choose main function here
+		testGeneticTicketSystem();
+	}
+	
+	//---------- Potential main functions to run ---------- 
+	private static void runApplication()
+	{		
 		Environment e = new Environment();
 		System.out.println(e.getMapString());
 		
-		int num_iterations = 5;
+		int num_iterations = 20;
 		for(int i = 0; i < num_iterations; i++)
 		{
 			e.iterate();
@@ -22,5 +29,12 @@ public class Main {
 //		    writer.write(mapString);
 //		    writer.close();
 		}
+	}
+	
+	private static void testGeneticTicketSystem() {
+		GeneticInfo gi = new GeneticInfo();
+		
+		int growDirection = gi.chooseShareDirection();
+		System.out.printf("Chosen action: %d\n",  growDirection);
 	}
 }

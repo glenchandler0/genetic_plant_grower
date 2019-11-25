@@ -8,15 +8,23 @@ public class Plant implements EnvEntity {
 	
 	ArrayList<PlantCell> listOfCells;
 	
+	//Create new sprout
 	public Plant()
 	{
 		listOfCells = new ArrayList<PlantCell>();
 		numCells = 0;
 		totalHealth = 0;
 		
-		listOfCells.add(new PlantCell(this, Environment.map.length - 1, 10));
+		listOfCells.add(new PlantCell(this, -1,-1, Environment.map.length - 1, 10));
 	}
 	
+	//--Basically gets all cells to do something in random order, and removes dead cells
+	//Reservoir samples all cells,
+	//TODO: Give health from sun
+	//Ask each cell to do action
+	//	if action is grow cell, add cell to general list of cells
+	//If cell is dead, mark it
+	//Clear dead cells
 	public void step()
 	{
 		// Reservoir sampling by generating ordered list of numbers
@@ -31,10 +39,12 @@ public class Plant implements EnvEntity {
 			int picked_index = rand.nextInt(numbers.size());
 			int picked_val = numbers.get(picked_index);
 
+			//TODO: Remove this feature, replicates the sun
+			int randGetHealth = rand.nextInt(5);
+			if(randGetHealth == 0)
+				listOfCells.get(picked_val).setHealth(listOfCells.get(picked_val).getHealth() + 1);
+			
 			//TODO: Maybe call a function on cell of random action that might occur
-			//	Also, consider passing list of cells to cell so it can handle nullifying itself,
-			//	this would also allow for the generic function to be void (TODO: add protected to plant?)
-			//	Might not be great, however, considering amount of meta plant info we might need.
 			//	Consider only returning object when necessary, (how it is now)
 			PlantCell newObject = listOfCells.get(picked_val).doAction();
 			if(newObject != null)
@@ -74,7 +84,7 @@ public class Plant implements EnvEntity {
 	public void printCellsHealth()
 	{
 		for(PlantCell cell : listOfCells)
-			System.out.printf("(%d, %d): %d\t", cell.getX(), cell.getY(), cell.getHealth());
+			System.out.printf("(%d, %d)|P(%d, %d): %d\t", cell.getX(), cell.getY(), cell.getParentX(), cell.getParentY(), cell.getHealth());
 		System.out.println();
 	}
 }

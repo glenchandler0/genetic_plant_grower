@@ -27,7 +27,7 @@ public class Environment {
 	}
 	
 	
-	
+	//------- ETC functions -------
 	public static String getMapString()
 	{
 		StringBuilder sb = new StringBuilder();
