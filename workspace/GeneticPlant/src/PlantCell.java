@@ -190,44 +190,6 @@ public class PlantCell extends EnvObject{
 		return null;
 	}
 	
-//	//Private functions
-//	private int pickX(int chooseAction)
-//	{		
-//		//TODO: Change directionality to refer to parent cell
-//		//Logic for deciding a direction
-//		int xDiff = 0;
-//		if(this.parentX < 0) {
-//			xDiff = 1;
-//		} else {
-//			xDiff = (this.parentX - this.x);// / Math.abs(this.parentX - this.x);
-//		}
-//		
-//		//Diffs are already oriented towards parent, if we want to grow new, we should go other way
-//		if(chooseAction == 0) {
-//			xDiff *= -1;
-//		}
-//	
-//		return this.x + xDiff;
-//	}
-//	private int pickY(int chooseAction)
-//	{		
-//		//TODO: Change directionality to refer to parent cell
-//		//Logic for deciding a direction
-//		int yDiff = 0;
-//		if(this.parentX < 0 || this.parentY < 0) {
-//			yDiff = 0;
-//		} else {
-//			yDiff = (this.parentY - this.y);// / Math.abs(this.parentY - this.y);
-//		}
-//		
-//		//Diffs are already oriented towards parent, if we want to grow new, we should go other way
-//		if(chooseAction == 0) {
-//			yDiff *= -1;
-//		}
-//		
-//		return this.y + yDiff;
-//	}
-	
 	//Setters and getters
 	public int getX() { return this.x; }
 	public int getY() { return this.y; }

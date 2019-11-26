@@ -54,7 +54,7 @@ public class Plant implements EnvEntity {
 				listOfCells.get(picked_val).setHealth(listOfCells.get(picked_val).getHealth() + 1);
 			}
 			//TODO: Remove this feature, replicates starvation
-			int randStarve = rand.nextInt(5);
+			int randStarve = rand.nextInt(20);
 			if(randStarve == 0) {
 				System.out.printf("Cell (%d,%d) lost health from starvation!\n", listOfCells.get(picked_val).getX(), listOfCells.get(picked_val).getY());
 				listOfCells.get(picked_val).setHealth(listOfCells.get(picked_val).getHealth() - 2);

@@ -3,6 +3,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 
+//TODO: Remove parent relativity
 public class GeneticInfo 
 {	
 	//Used for calculating distribution of direction
@@ -11,10 +12,10 @@ public class GeneticInfo
 	int rightGrowTickets;
 	int upGrowTickets;
 	int downGrowTickets;
-	int xParentGrowTickets = 50;
-	int xAwayParentGrowTickets = 50; //TODO: Remove
-	int yParentGrowTickets = 50;
-	int yAwayParentGrowTickets = 50; //TODO: Remove
+	int xParentGrowTickets;
+	int xAwayParentGrowTickets;
+	int yParentGrowTickets;
+	int yAwayParentGrowTickets;
 	
 	//Used for caclulating distribution of direction
 	//for sharing energy to adjacent cell
@@ -22,10 +23,10 @@ public class GeneticInfo
 	int rightShareTickets;
 	int upShareTickets;
 	int downShareTickets;
-	int xParentShareTickets = 50;
-	int xAwayParentShareTickets = 50; //TODO: Remove
-	int yParentShareTickets = 50;
-	int yAwayParentShareTickets = 50; //TODO: Remove
+	int xParentShareTickets;
+	int xAwayParentShareTickets;
+	int yParentShareTickets;
+	int yAwayParentShareTickets;
 	
 	//How much energy would be shared to adjacent cell
 	double energyShareAmnt;
@@ -52,9 +53,9 @@ public class GeneticInfo
 		rightGrowTickets = 0;
 		upGrowTickets = 0;
 		downGrowTickets = 0;
-		xParentGrowTickets = 50;
+		xParentGrowTickets = 0;
 		xAwayParentGrowTickets = 50; //TODO: Remove
-		yParentGrowTickets = 50;
+		yParentGrowTickets = 0;
 		yAwayParentGrowTickets = 50; //TODO: Remove
 		
 		leftShareTickets = 0;
@@ -62,17 +63,17 @@ public class GeneticInfo
 		upShareTickets = 0;
 		downShareTickets = 0;
 		xParentShareTickets = 50;
-		xAwayParentShareTickets = 50; //TODO: Remove
+		xAwayParentShareTickets = 0; //TODO: Remove
 		yParentShareTickets = 50;
-		yAwayParentShareTickets = 50; //TODO: Remove
+		yAwayParentShareTickets = 0; //TODO: Remove
 		
 		//How much energy would be shared to adjacent cell
-		energyShareAmnt = 0.50;
+		energyShareAmnt = 0.25;
 		//How much energy would be given to newly grown cell
-		energyGrowAmnt = 0.50;
+		energyGrowAmnt = 0.25;
 		
 		growTickets = 50;
-		shareTickets = 50;
+		shareTickets = 200;
 		obstainTickets = 50;
 		
 		stemTickets = 50;
@@ -82,6 +83,10 @@ public class GeneticInfo
 	
 	//----- Functionality ------
 	public void randomizeGenes() {
+		;
+	}
+	
+	public void setOptimalGenes() {
 		;
 	}
 	
