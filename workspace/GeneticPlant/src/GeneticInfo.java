@@ -11,6 +11,10 @@ public class GeneticInfo
 	int rightGrowTickets;
 	int upGrowTickets;
 	int downGrowTickets;
+	int xParentGrowTickets = 50;
+	int xAwayParentGrowTickets = 50; //TODO: Remove
+	int yParentGrowTickets = 50;
+	int yAwayParentGrowTickets = 50; //TODO: Remove
 	
 	//Used for caclulating distribution of direction
 	//for sharing energy to adjacent cell
@@ -18,6 +22,10 @@ public class GeneticInfo
 	int rightShareTickets;
 	int upShareTickets;
 	int downShareTickets;
+	int xParentShareTickets = 50;
+	int xAwayParentShareTickets = 50; //TODO: Remove
+	int yParentShareTickets = 50;
+	int yAwayParentShareTickets = 50; //TODO: Remove
 	
 	//How much energy would be shared to adjacent cell
 	double energyShareAmnt;
@@ -40,24 +48,33 @@ public class GeneticInfo
 	
 	//By default gives all tickets even distribution
 	public GeneticInfo() {
-		leftGrowTickets = 50;
-		rightGrowTickets = 50;
-		upGrowTickets = 52;
-		downGrowTickets = 50;
+		leftGrowTickets = 0;
+		rightGrowTickets = 0;
+		upGrowTickets = 0;
+		downGrowTickets = 0;
+		xParentGrowTickets = 50;
+		xAwayParentGrowTickets = 50; //TODO: Remove
+		yParentGrowTickets = 50;
+		yAwayParentGrowTickets = 50; //TODO: Remove
 		
-		leftShareTickets = 51;
-		rightShareTickets = 50;
-		upShareTickets = 50;
-		downShareTickets = 50;
+		leftShareTickets = 0;
+		rightShareTickets = 0;
+		upShareTickets = 0;
+		downShareTickets = 0;
+		xParentShareTickets = 50;
+		xAwayParentShareTickets = 50; //TODO: Remove
+		yParentShareTickets = 50;
+		yAwayParentShareTickets = 50; //TODO: Remove
 		
 		//How much energy would be shared to adjacent cell
-		energyShareAmnt = 0.25;
+		energyShareAmnt = 0.50;
 		//How much energy would be given to newly grown cell
-		energyGrowAmnt = 0.25;
+		energyGrowAmnt = 0.50;
 		
 		growTickets = 50;
 		shareTickets = 50;
 		obstainTickets = 50;
+		
 		stemTickets = 50;
 		leafTickets = 50;
 		flowerTickets= 50;
@@ -68,6 +85,7 @@ public class GeneticInfo
 		;
 	}
 	
+	//To be used in collection sort
 	private class Ticket {
 		private int id; //left, right, up, down
 		private int numTickets;
@@ -84,7 +102,6 @@ public class GeneticInfo
 			return id;
 		}
 	}
-	
 	//Abstractable function which takes a list of tickets (4 for now) and returns which ticket was chosen
 	private int chooseTicket(ArrayList<Integer> ticketList)//int ticket0, int ticket1, int ticket2, int ticket3)
 	{
@@ -129,6 +146,11 @@ public class GeneticInfo
 		return -1; //Error, could not select ticket
 	}
 	
+	
+	
+	
+	
+	// ------------ Functions for interpreting genetics ----------
 	public int chooseAction() {
 		//Since chooseTicket takes 4 arguments
 		ArrayList<Integer> ticketList = new ArrayList<Integer>();
@@ -145,6 +167,10 @@ public class GeneticInfo
 		ticketList.add(rightGrowTickets);
 		ticketList.add(upGrowTickets);
 		ticketList.add(downGrowTickets);
+		ticketList.add(xParentGrowTickets);
+		ticketList.add(xAwayParentGrowTickets); //TODO: Remove
+		ticketList.add(yParentGrowTickets);
+		ticketList.add(yAwayParentGrowTickets); //TODO: Remove
 		
 		return chooseTicket(ticketList);
 	}
@@ -155,7 +181,47 @@ public class GeneticInfo
 		ticketList.add(rightShareTickets);
 		ticketList.add(upShareTickets);
 		ticketList.add(downShareTickets);
+		ticketList.add(xParentShareTickets);
+		ticketList.add(xAwayParentShareTickets); //TODO: Remove
+		ticketList.add(yParentShareTickets);
+		ticketList.add(yAwayParentShareTickets); //TODO: Remove
 		
 		return chooseTicket(ticketList);
+	}
+	
+	// -------- House Keeping functions --------
+	public String printGeneticInfo() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("leftGrowTickets:\t" + leftGrowTickets + "\n");
+		sb.append("rightGrowTickets:\t" + rightGrowTickets + "\n");
+		sb.append("upGrowTickets:\t\t" + upGrowTickets + "\n");
+		sb.append("downGrowTickets:\t" + downGrowTickets + "\n");
+		
+		sb.append("leftShareTickets:\t" + leftShareTickets + "\n");
+		sb.append("rightShareTickets:\t" + rightShareTickets + "\n");
+		sb.append("upGrowTickets:\t\t" + upGrowTickets + "\n");
+		sb.append("downGrowTickets:\t" + downShareTickets + "\n");
+		
+		sb.append("energyGrowAmnt:\t\t" + energyGrowAmnt + "\n");
+		sb.append("energyShareAmnt:\t" + energyShareAmnt + "\n");
+		
+		sb.append("growTickets:\t\t" + growTickets + "\n");
+		sb.append("shareTickets:\t\t" + shareTickets + "\n");
+		sb.append("obstainTickets:\t\t" + obstainTickets + "\n");
+		
+		sb.append("stemTickets:\t\t" + stemTickets + "\n");
+		sb.append("leafTickets:\t\t" + leafTickets + "\n");
+		sb.append("flowerTickets:\t\t" + flowerTickets + "\n");
+		
+		return sb.toString();
+	}
+	
+	public double getEnergyShareAmnt() {
+		return this.energyShareAmnt;
+	}
+	
+	public double getEnergyGrowAmnt() {
+		return this.energyGrowAmnt;
 	}
 }

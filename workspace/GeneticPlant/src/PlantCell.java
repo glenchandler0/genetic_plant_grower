@@ -13,82 +13,127 @@ public class PlantCell extends EnvObject{
 	
 	Plant myPlant; //Reference to full plant 
 	
-	GeneticInfo genes;
+	GeneticInfo genes; //Will be used for making decisions
 	
 	//TODO Add type of plant
 	
-	//TODO Add parent direction meta info
-		//-Maybe change health moving to giving to children vs parent and randomize proportions?
-
 	
-	//TODO: Add genetic ticket information here
-	//	possibly meta data class? For easy genetic handling later?
-	
-	
-	public PlantCell(Plant plantPointer, int parentX, int parentY)
+	public PlantCell(Plant plantPointer, GeneticInfo genes, int parentX, int parentY)
 	{
+		//TODO: Handle different plant cell cases here by copying previous genetics, then modifying this newer one
+		
+		
 		//TODO: Handle generic cell creation
 		
 		health = 5; //TODO: Make random
 		
-		myPlant = plantPointer;
+		this.genes = genes;
+		this.myPlant = plantPointer;
 		this.parentX = parentX;
 		this.parentY = parentY;
 	}
 	
-	public PlantCell(Plant plantPointer, int parentX, int parentY, int x, int y)
+	public PlantCell(Plant plantPointer, GeneticInfo genes, int parentX, int parentY, int x, int y, int health)
 	{
 		this.x = x;
 		this.y = y;
-		
-		health = 5; //TODO: Make random
-		
 		Environment.map[x][y] = this;
+		
+		this.health = health; //TODO: Make random
+		
+		this.genes = genes;
 		myPlant = plantPointer;
 		this.parentX = parentX;
 		this.parentY = parentY;
 	}
 	
-	//Actions
-	//This function is the function that will ultimately encode genetics into actions and directions
-	//TODO: Implement random action - you can add arguments back to grow adjacent and pass health
-	//	this function will probably be the one that handles genetic ticket handling
 	public PlantCell doAction()
-	{	
-		//TODO: Implement with genetics
-		//Choose action
+	{
+		System.out.printf("cell (%d,%d) ", this.x, this.y);
+		//0-grow, 1-share, 2-obstain
+		int chooseAction = genes.chooseAction();
 		
-		//Choose direction for certain action
+		//Get direction based on action
+		int direction = -1;
+		if(chooseAction == 0) {
+			direction = genes.chooseGrowDirection();
+			System.out.print("Chose to grow ");
+		}
+		else if(chooseAction == 1) {
+			direction = genes.chooseShareDirection();
+			System.out.print("Chose to share ");
+		}
+		else {
+			System.out.print("Chose to obstain ");
+		}
 		
-		//Choose amount for direction
+		//Decode new location
+		int newX = -1, newY = -1;
+		if(direction == 0) { //Left
+			newX = this.x;
+			newY = this.y - 1;
+		} else if(direction == 1) { //Right
+			newX = this.x;
+			newY = this.y + 1;
+		} else if(direction == 2) { //Up
+			newX = this.x - 1;
+			newY = this.y;
+		} else if(direction == 3) { //Down
+			newX = this.x + 1;
+			newY = this.y;
+		} 
+		//TODO: Probably going to want to remove the below, seems to confuse it
+		else if(direction == 4) { //xParent
+			if((this.x > this.parentX))
+				newX = this.x - 1;
+			else
+				newX = this.x + 1;
+			newY = this.y;
+		} else if(direction == 5) { //xParentAway
+			if((this.x > this.parentX))
+				newX = this.x + 1;
+			else
+				newX = this.x - 1;
+			newY = this.y;
+		} else if(direction == 6) { //yParent
+			if((this.y > this.parentY))
+				newY = this.y - 1;
+			else
+				newY = this.y + 1;
+			newX = this.x;
+		} else if(direction == 7) {	 //yParentAway
+			if((this.y > this.parentY))
+				newY = this.y + 1;
+			else
+				newY = this.y - 1;
+			newX = this.x;
+		}
+		System.out.printf("into location: (%d,%d)\n", newX, newY);
 		
-		
-		Random rand = new Random();
-		int chooseAction = rand.nextInt(3);
-		
-		int newX = pickX(chooseAction);
-		int newY = pickY(chooseAction);
-		
-		if(chooseAction == 0)
+		//Apply action with location
+		if(chooseAction == 0) {
 			return growAdjacent(newX, newY);
-		else if(chooseAction == 1 || chooseAction == 2)
-			return passHealth(newX, newY);
+		}
+		else if(chooseAction == 1) {
+			return shareHealth(newX, newY);
+		}
+		else {
+			;
+		}
 		
-		System.out.println("Code should never get here - doAction()");
-		return null; //stub
+		return null;
 	}
 	
 	//TODO: Complete
 	//Postcondition: Null corresponds to no cell needs to be added to 
-	public PlantCell passHealth(int newX, int newY)
+	public PlantCell shareHealth(int newX, int newY)
 	{
-		System.out.println("Attempting to give heatlh!");
 		
-		int healthIncr = 1; //Should always be positive
+		int healthIncr = (int) (this.health * genes.getEnergyShareAmnt()); //Should always be positive
 		
 		//TODO: Rethink this rule
-		if(this.health <= healthIncr)
-			return null;
+//		if(this.health <= healthIncr)
+//			return null;
 		
 		PlantCell newPlant;
 		// Make sure proposed spot is in bounds, then ensure that there isn't an entity there already
@@ -108,7 +153,7 @@ public class PlantCell extends EnvObject{
 						cell.setHealth(cell.getHealth() + healthIncr);
 						this.health = this.health - healthIncr;
 						
-						System.out.println("Gave health!");
+//						System.out.printf("Gave %d health!\n", healthIncr);
 						
 						return null;
 					}
@@ -121,8 +166,10 @@ public class PlantCell extends EnvObject{
 	
 	public PlantCell growAdjacent(int newX, int newY)
 	{
+		int sacrificeAmnt = (int) (this.health * genes.getEnergyGrowAmnt()); //Should always be positive
+		
 		//TODO: Rethink feature for cells not to end themselves
-		if(this.health <= 2)
+		if(this.health - sacrificeAmnt <= 0)
 			return null;
 		
 		PlantCell newPlant;
@@ -130,11 +177,12 @@ public class PlantCell extends EnvObject{
 		if(newX > 0 && newX < Environment.map.length && newY > 0 && newY < Environment.map[0].length) {
 			if(Environment.map[newX][newY] == null)
 			{
-				newPlant = new PlantCell(myPlant, this.x, this.y, newX, newY);
+				//TODO: Check 'genes' addition
+				newPlant = new PlantCell(myPlant, genes, this.x, this.y, newX, newY, sacrificeAmnt);
 				
 				Environment.map[newX][newY] = newPlant;
 				
-				this.health -= 2; //Spawning a new plant reduces health
+				this.health -= sacrificeAmnt; //Spawning a new plant reduces health
 				return newPlant;
 			}
 		}
@@ -142,43 +190,43 @@ public class PlantCell extends EnvObject{
 		return null;
 	}
 	
-	//Private functions
-	private int pickX(int chooseAction)
-	{		
-		//TODO: Change directionality to refer to parent cell
-		//Logic for deciding a direction
-		int xDiff = 0;
-		if(this.parentX < 0) {
-			xDiff = 1;
-		} else {
-			xDiff = (this.parentX - this.x);// / Math.abs(this.parentX - this.x);
-		}
-		
-		//Diffs are already oriented towards parent, if we want to grow new, we should go other way
-		if(chooseAction == 0) {
-			xDiff *= -1;
-		}
-	
-		return this.x + xDiff;
-	}
-	private int pickY(int chooseAction)
-	{		
-		//TODO: Change directionality to refer to parent cell
-		//Logic for deciding a direction
-		int yDiff = 0;
-		if(this.parentX < 0 || this.parentY < 0) {
-			yDiff = 0;
-		} else {
-			yDiff = (this.parentY - this.y);// / Math.abs(this.parentY - this.y);
-		}
-		
-		//Diffs are already oriented towards parent, if we want to grow new, we should go other way
-		if(chooseAction == 0) {
-			yDiff *= -1;
-		}
-		
-		return this.y + yDiff;
-	}
+//	//Private functions
+//	private int pickX(int chooseAction)
+//	{		
+//		//TODO: Change directionality to refer to parent cell
+//		//Logic for deciding a direction
+//		int xDiff = 0;
+//		if(this.parentX < 0) {
+//			xDiff = 1;
+//		} else {
+//			xDiff = (this.parentX - this.x);// / Math.abs(this.parentX - this.x);
+//		}
+//		
+//		//Diffs are already oriented towards parent, if we want to grow new, we should go other way
+//		if(chooseAction == 0) {
+//			xDiff *= -1;
+//		}
+//	
+//		return this.x + xDiff;
+//	}
+//	private int pickY(int chooseAction)
+//	{		
+//		//TODO: Change directionality to refer to parent cell
+//		//Logic for deciding a direction
+//		int yDiff = 0;
+//		if(this.parentX < 0 || this.parentY < 0) {
+//			yDiff = 0;
+//		} else {
+//			yDiff = (this.parentY - this.y);// / Math.abs(this.parentY - this.y);
+//		}
+//		
+//		//Diffs are already oriented towards parent, if we want to grow new, we should go other way
+//		if(chooseAction == 0) {
+//			yDiff *= -1;
+//		}
+//		
+//		return this.y + yDiff;
+//	}
 	
 	//Setters and getters
 	public int getX() { return this.x; }

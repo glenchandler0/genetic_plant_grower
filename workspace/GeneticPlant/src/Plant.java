@@ -9,13 +9,21 @@ public class Plant implements EnvEntity {
 	ArrayList<PlantCell> listOfCells;
 	
 	//Create new sprout
-	public Plant()
+	public Plant(GeneticInfo gi)
 	{
 		listOfCells = new ArrayList<PlantCell>();
 		numCells = 0;
 		totalHealth = 0;
 		
-		listOfCells.add(new PlantCell(this, -1,-1, Environment.map.length - 1, 10));
+		//TODO: Check - First cell gets first genetic info, rest is inherited by parent
+		listOfCells.add(new PlantCell(this, gi, -1,-1, Environment.map.length - 1, 10, 10));
+		
+		//TODO: Remove - 4 seeds for testing
+		listOfCells.add(new PlantCell(this, gi, -1,-1, Environment.map.length - 1, 9, 10));
+		
+		listOfCells.add(new PlantCell(this, gi, -1,-1, Environment.map.length - 2, 10, 10));
+		
+		listOfCells.add(new PlantCell(this, gi, -1,-1, Environment.map.length - 2, 9, 10));
 	}
 	
 	//--Basically gets all cells to do something in random order, and removes dead cells
@@ -41,15 +49,23 @@ public class Plant implements EnvEntity {
 
 			//TODO: Remove this feature, replicates the sun
 			int randGetHealth = rand.nextInt(5);
-			if(randGetHealth == 0)
+			if(randGetHealth == 0) {
+				System.out.printf("Cell (%d,%d) gained health from the sun!\n", listOfCells.get(picked_val).getX(), listOfCells.get(picked_val).getY());
 				listOfCells.get(picked_val).setHealth(listOfCells.get(picked_val).getHealth() + 1);
+			}
+			//TODO: Remove this feature, replicates starvation
+			int randStarve = rand.nextInt(5);
+			if(randStarve == 0) {
+				System.out.printf("Cell (%d,%d) lost health from starvation!\n", listOfCells.get(picked_val).getX(), listOfCells.get(picked_val).getY());
+				listOfCells.get(picked_val).setHealth(listOfCells.get(picked_val).getHealth() - 2);
+			}
 			
 			//TODO: Maybe call a function on cell of random action that might occur
 			//	Consider only returning object when necessary, (how it is now)
 			PlantCell newObject = listOfCells.get(picked_val).doAction();
 			if(newObject != null)
 			{
-				System.out.println("Object not null!");
+				System.out.println("New cell generated!");
 				listOfCells.add(newObject);
 			}
 			

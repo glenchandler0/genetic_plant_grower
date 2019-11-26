@@ -8,7 +8,7 @@ public class Main {
 		System.out.println("Hello world!");
 		
 		//Choose main function here
-		testGeneticTicketSystem();
+		runApplication();
 	}
 	
 	//---------- Potential main functions to run ---------- 
@@ -17,7 +17,7 @@ public class Main {
 		Environment e = new Environment();
 		System.out.println(e.getMapString());
 		
-		int num_iterations = 20;
+		int num_iterations = 25;
 		for(int i = 0; i < num_iterations; i++)
 		{
 			e.iterate();

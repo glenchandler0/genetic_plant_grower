@@ -12,7 +12,10 @@ public class Environment {
 		map = new EnvObject[25][25];
 		entityList = new ArrayList<>();
 		
-		Plant plant0 = new Plant();
+		GeneticInfo gi = new GeneticInfo();
+		System.out.println(gi.printGeneticInfo());
+		
+		Plant plant0 = new Plant(gi);
 		entityList.add(plant0);
 	}
 	
