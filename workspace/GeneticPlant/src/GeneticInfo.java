@@ -49,31 +49,35 @@ public class GeneticInfo
 	
 	//By default gives all tickets even distribution
 	public GeneticInfo() {
-		leftGrowTickets = 0;
-		rightGrowTickets = 0;
-		upGrowTickets = 0;
-		downGrowTickets = 0;
-		xParentGrowTickets = 0;
+		setOptimalGenes();
+	}
+	
+	public void setControlGenes() {
+		leftGrowTickets = 50;
+		rightGrowTickets = 50;
+		upGrowTickets = 50;
+		downGrowTickets = 50;
+		xParentGrowTickets = 50;
 		xAwayParentGrowTickets = 50; //TODO: Remove
-		yParentGrowTickets = 0;
+		yParentGrowTickets = 50;
 		yAwayParentGrowTickets = 50; //TODO: Remove
 		
-		leftShareTickets = 0;
-		rightShareTickets = 0;
-		upShareTickets = 0;
-		downShareTickets = 0;
+		leftShareTickets = 50;
+		rightShareTickets = 50;
+		upShareTickets = 50;
+		downShareTickets = 50;
 		xParentShareTickets = 50;
-		xAwayParentShareTickets = 0; //TODO: Remove
+		xAwayParentShareTickets = 50; //TODO: Remove
 		yParentShareTickets = 50;
-		yAwayParentShareTickets = 0; //TODO: Remove
+		yAwayParentShareTickets = 50; //TODO: Remove
 		
 		//How much energy would be shared to adjacent cell
-		energyShareAmnt = 0.25;
+		energyShareAmnt = 0.50;
 		//How much energy would be given to newly grown cell
-		energyGrowAmnt = 0.25;
+		energyGrowAmnt = 0.50;
 		
 		growTickets = 50;
-		shareTickets = 200;
+		shareTickets = 50;
 		obstainTickets = 50;
 		
 		stemTickets = 50;
@@ -83,11 +87,71 @@ public class GeneticInfo
 	
 	//----- Functionality ------
 	public void randomizeGenes() {
-		;
+		Random rand = new Random();
+		
+		leftGrowTickets = rand.nextInt(200);
+		rightGrowTickets = rand.nextInt(200);
+		upGrowTickets = rand.nextInt(200);
+		downGrowTickets = rand.nextInt(200);
+		xParentGrowTickets = rand.nextInt(200);
+		xAwayParentGrowTickets = rand.nextInt(200); //TODO: Remove
+		yParentGrowTickets = rand.nextInt(200);
+		yAwayParentGrowTickets = rand.nextInt(200); //TODO: Remove
+		
+		leftShareTickets = rand.nextInt(200);
+		rightShareTickets = rand.nextInt(200);
+		upShareTickets = rand.nextInt(200);
+		downShareTickets = rand.nextInt(200);
+		xParentShareTickets = rand.nextInt(200);
+		xAwayParentShareTickets = rand.nextInt(200); //TODO: Remove
+		yParentShareTickets = rand.nextInt(200);
+		yAwayParentShareTickets = rand.nextInt(200); //TODO: Remove
+		
+		//How much energy would be shared to adjacent cell
+		energyShareAmnt = rand.nextDouble();
+		//How much energy would be given to newly grown cell
+		energyGrowAmnt = rand.nextDouble();
+		
+		growTickets = rand.nextInt(200);
+		shareTickets = rand.nextInt(200);
+		obstainTickets = rand.nextInt(200);
+		
+		stemTickets = rand.nextInt(200);
+		leafTickets = rand.nextInt(200);
+		flowerTickets= rand.nextInt(200);
 	}
 	
 	public void setOptimalGenes() {
-		;
+		leftGrowTickets = 50;
+		rightGrowTickets = 50;
+		upGrowTickets = 200;
+		downGrowTickets = 10;
+		xParentGrowTickets = 10;
+		xAwayParentGrowTickets = 50; //TODO: Remove
+		yParentGrowTickets = 10;
+		yAwayParentGrowTickets = 100; //TODO: Remove
+		
+		leftShareTickets = 50;
+		rightShareTickets = 50;
+		upShareTickets = 10;
+		downShareTickets = 100;
+		xParentShareTickets = 100;
+		xAwayParentShareTickets = 10; //TODO: Remove
+		yParentShareTickets = 100;
+		yAwayParentShareTickets = 10; //TODO: Remove
+		
+		//How much energy would be shared to adjacent cell
+		energyShareAmnt = 0.1;
+		//How much energy would be given to newly grown cell
+		energyGrowAmnt = 0.25;
+		
+		growTickets = 50;
+		shareTickets = 100;
+		obstainTickets = 100;
+		
+		stemTickets = 50;
+		leafTickets = 50;
+		flowerTickets= 50;
 	}
 	
 	//To be used in collection sort

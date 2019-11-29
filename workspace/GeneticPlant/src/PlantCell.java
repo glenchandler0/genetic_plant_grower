@@ -49,6 +49,9 @@ public class PlantCell extends EnvObject{
 	
 	public PlantCell doAction()
 	{
+		//Will handle cells passively interacting with the environment
+		interactWithEnvironment();
+		
 		System.out.printf("cell (%d,%d) ", this.x, this.y);
 		//0-grow, 1-share, 2-obstain
 		int chooseAction = genes.chooseAction();
@@ -188,6 +191,36 @@ public class PlantCell extends EnvObject{
 		}
 		
 		return null;
+	}
+	
+	private void interactWithEnvironment() {
+		//TODO: Add conditions for type of plant 
+		
+		System.out.printf("\tCell (%d,%d) ", this.x, this.y);
+		int sharedAmnt = Environment.getSun(this.x, this.y);
+		this.health += sharedAmnt;
+		System.out.printf(" got %d health from the sun\n", sharedAmnt);
+		
+		Random rand = new Random();
+		System.out.printf("\tCell (%d,%d) ", this.x, this.y);
+		int starvedAmnt = 5;
+//		if(rand.nextInt(5) == 0)
+		this.health -= starvedAmnt;
+		System.out.printf(" starved %d health from the sun\n", starvedAmnt);
+	}
+	
+	//TODO: Remove self function
+	public void removeSelf() {
+		for(int i = 0; i < myPlant.listOfCells.size(); i++) {
+			if(myPlant.listOfCells.get(i) == this)
+			{
+				myPlant.listOfCells.remove(i);
+				return;
+			}
+		}
+		
+		System.out.println("Error! Could not remove self from list");
+		throw new Error();
 	}
 	
 	//Setters and getters
