@@ -293,4 +293,16 @@ public class GeneticInfo
 	public double getEnergyGrowAmnt() {
 		return this.energyGrowAmnt;
 	}
+	
+	//------- Porting functions -------
+	//TODO: Implement probably by comma seperated integers
+	public static int[] encodeGenes() {
+		return new int[0];
+	}
+	
+	public static GeneticInfo decodeGenes(int[] input) {
+		return null;
+	}
+	
+	//-------- Functions for genetic encoding ------
 }

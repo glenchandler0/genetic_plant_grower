@@ -37,12 +37,12 @@ public class PlantCell extends EnvObject{
 	{
 		this.x = x;
 		this.y = y;
-		Environment.map[x][y] = this;
+		plantPointer.getEnvironment().map[x][y] = this;
 		
 		this.health = health; //TODO: Make random
 		
 		this.genes = genes;
-		myPlant = plantPointer;
+		this.myPlant = plantPointer;
 		this.parentX = parentX;
 		this.parentY = parentY;
 	}
@@ -140,8 +140,8 @@ public class PlantCell extends EnvObject{
 		
 		PlantCell newPlant;
 		// Make sure proposed spot is in bounds, then ensure that there isn't an entity there already
-		if(newX > 0 && newX < Environment.map.length && newY > 0 && newY < Environment.map[0].length) {
-			if(Environment.map[newX][newY] != null)
+		if(newX > 0 && newX < myPlant.getEnvironment().map.length && newY > 0 && newY < myPlant.getEnvironment().map[0].length) {
+			if(myPlant.getEnvironment().map[newX][newY] != null)
 			{
 				//Code to ensure adjacent cell is part of this plant
 				for(PlantCell cell: myPlant.getCellList())
@@ -177,13 +177,13 @@ public class PlantCell extends EnvObject{
 		
 		PlantCell newPlant;
 		// Make sure proposed spot is in bounds, then ensure that there isn't an entity there already
-		if(newX > 0 && newX < Environment.map.length && newY > 0 && newY < Environment.map[0].length) {
-			if(Environment.map[newX][newY] == null)
+		if(newX > 0 && newX < myPlant.getEnvironment().map.length && newY > 0 && newY < myPlant.getEnvironment().map[0].length) {
+			if(myPlant.getEnvironment().map[newX][newY] == null)
 			{
 				//TODO: Check 'genes' addition
 				newPlant = new PlantCell(myPlant, genes, this.x, this.y, newX, newY, sacrificeAmnt);
 				
-				Environment.map[newX][newY] = newPlant;
+				myPlant.getEnvironment().map[newX][newY] = newPlant;
 				
 				this.health -= sacrificeAmnt; //Spawning a new plant reduces health
 				return newPlant;

@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Environment {
-	public static EnvObject[][] map; //TODO: Change to more generic object
+	public EnvObject[][] map; //TODO: Change to more generic object
 	public static ArrayList<EnvEntity> entityList;
 	
 	static int sizeX;
@@ -25,7 +25,7 @@ public class Environment {
 		GeneticInfo gi = new GeneticInfo();
 		System.out.println(gi.printGeneticInfo());
 		
-		Plant plant0 = new Plant(gi);
+		Plant plant0 = new Plant(gi, this);
 		entityList.add(plant0);
 	}
 	
@@ -126,6 +126,29 @@ public class Environment {
 					sb.append(" - ");
 				else
 					sb.append(" # ");
+			}
+			sb.append("\n");
+		}
+		
+		return sb.toString();
+	}
+	
+	//TODO: Test this instead of typical map
+	public String getHealthString()
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		for(int i = 0; i < map.length; i++)
+		{
+			for(int j = 0; j < map[i].length; j++)
+			{
+				if(map[i][j] == null)
+					sb.append(" ---- ");
+				else {
+					int entityHealth;
+					entityHealth = ((PlantCell)map[i][j]).getHealth();
+					sb.append(String.format(" %3d# ", entityHealth));
+				}
 			}
 			sb.append("\n");
 		}

@@ -7,18 +7,20 @@ public class Plant implements EnvEntity {
 	int numCells;
 	
 	ArrayList<PlantCell> listOfCells;
+	Environment environmentPointer;
 	
 	//Create new sprout
-	public Plant(GeneticInfo gi)
+	public Plant(GeneticInfo gi, Environment e)
 	{
+		environmentPointer = e;
 		listOfCells = new ArrayList<PlantCell>();
 		numCells = 0;
 		totalHealth = 0;
 		
 		//TODO: Check - First cell gets first genetic info, rest is inherited by parent
-		listOfCells.add(new PlantCell(this, gi, -1,-1, Environment.map.length - 1, 5, 10));
+		listOfCells.add(new PlantCell(this, gi, -1,-1, environmentPointer.map.length - 1, 5, 10));
 		
-		listOfCells.add(new PlantCell(this, gi, -1,-1, Environment.map.length - 14, 5, 10));
+		listOfCells.add(new PlantCell(this, gi, -1,-1, environmentPointer.map.length - 14, 5, 10));
 		
 		//TODO: Remove - 4 seeds for testing
 //		listOfCells.add(new PlantCell(this, gi, -1,-1, Environment.map.length - 1, 9, 10));
@@ -62,7 +64,7 @@ public class Plant implements EnvEntity {
 			//should die right away to make room for other cell
 			if(listOfCells.get(picked_val).getHealth() <= 0)
 			{
-				Environment.map[listOfCells.get(picked_val).getX()][listOfCells.get(picked_val).getY()] = null;
+				environmentPointer.map[listOfCells.get(picked_val).getX()][listOfCells.get(picked_val).getY()] = null;
 				listOfCells.set(picked_val, null); //Set to null as to preserve list integrity for reservoir sampling, will be removed later
 			}
 			
@@ -84,6 +86,7 @@ public class Plant implements EnvEntity {
 	public int getTotalHealth() { return this.totalHealth; }
 	public int getNumCells() { return this.numCells; }
 	public ArrayList<PlantCell> getCellList() { return this.listOfCells; }
+	public Environment getEnvironment() { return this.environmentPointer; }
 	
 	//Statistic information
 	public void printCellsHealth()
