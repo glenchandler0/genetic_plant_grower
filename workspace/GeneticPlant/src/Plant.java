@@ -56,7 +56,7 @@ public class Plant implements EnvEntity {
 			PlantCell newObject = listOfCells.get(picked_val).doAction();
 			if(newObject != null)
 			{
-				System.out.println("New cell generated!");
+//				System.out.println("New cell generated!");
 				listOfCells.add(newObject);
 			}
 			

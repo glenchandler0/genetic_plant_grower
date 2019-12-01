@@ -12,7 +12,7 @@ public class Environment {
 	static int sunX;
 	static int sunY;
 	
-	public Environment()
+	public Environment(GeneticInfo gi)
 	{
 		sizeX = 25;
 		sizeY = 25;
@@ -22,8 +22,8 @@ public class Environment {
 		map = new EnvObject[sizeX][sizeY];
 		entityList = new ArrayList<>();
 		
-		GeneticInfo gi = new GeneticInfo();
-		System.out.println(gi.printGeneticInfo());
+//		GeneticInfo gi = new GeneticInfo();
+//		System.out.println(gi.printGeneticInfo());
 		
 		Plant plant0 = new Plant(gi, this);
 		entityList.add(plant0);
@@ -35,8 +35,8 @@ public class Environment {
 		for(EnvEntity entity: entityList)
 			entity.step();
 		
-		Plant p = (Plant) entityList.get(0);
-		p.printCellsHealth();
+//		Plant p = (Plant) entityList.get(0);
+//		p.printCellsHealth();
 	}
 	
 	//------- Environment interaction functions --------

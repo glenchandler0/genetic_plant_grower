@@ -52,7 +52,7 @@ public class PlantCell extends EnvObject{
 		//Will handle cells passively interacting with the environment
 		interactWithEnvironment();
 		
-		System.out.printf("cell (%d,%d) ", this.x, this.y);
+		//System.out.printf("cell (%d,%d) ", this.x, this.y);
 		//0-grow, 1-share, 2-obstain
 		int chooseAction = genes.chooseAction();
 		
@@ -60,14 +60,14 @@ public class PlantCell extends EnvObject{
 		int direction = -1;
 		if(chooseAction == 0) {
 			direction = genes.chooseGrowDirection();
-			System.out.print("Chose to grow ");
+			//System.out.print("Chose to grow ");
 		}
 		else if(chooseAction == 1) {
 			direction = genes.chooseShareDirection();
-			System.out.print("Chose to share ");
+			//System.out.print("Chose to share ");
 		}
 		else {
-			System.out.print("Chose to obstain ");
+			//System.out.print("Chose to obstain ");
 		}
 		
 		//Decode new location
@@ -111,7 +111,7 @@ public class PlantCell extends EnvObject{
 				newY = this.y - 1;
 			newX = this.x;
 		}
-		System.out.printf("into location: (%d,%d)\n", newX, newY);
+		//System.out.printf("into location: (%d,%d)\n", newX, newY);
 		
 		//Apply action with location
 		if(chooseAction == 0) {
@@ -196,17 +196,17 @@ public class PlantCell extends EnvObject{
 	private void interactWithEnvironment() {
 		//TODO: Add conditions for type of plant 
 		
-		System.out.printf("\tCell (%d,%d) ", this.x, this.y);
+		//System.out.printf("\tCell (%d,%d) ", this.x, this.y);
 		int sharedAmnt = Environment.getSun(this.x, this.y);
 		this.health += sharedAmnt;
-		System.out.printf(" got %d health from the sun\n", sharedAmnt);
+		//System.out.printf(" got %d health from the sun\n", sharedAmnt);
 		
 		Random rand = new Random();
-		System.out.printf("\tCell (%d,%d) ", this.x, this.y);
+		//System.out.printf("\tCell (%d,%d) ", this.x, this.y);
 		int starvedAmnt = 5;
 //		if(rand.nextInt(5) == 0)
 		this.health -= starvedAmnt;
-		System.out.printf(" starved %d health from the sun\n", starvedAmnt);
+		//System.out.printf(" starved %d health from the sun\n", starvedAmnt);
 	}
 	
 	//TODO: Remove self function
