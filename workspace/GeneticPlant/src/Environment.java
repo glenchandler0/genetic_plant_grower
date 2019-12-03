@@ -21,6 +21,7 @@ public class Environment {
 		
 		map = new EnvObject[sizeX][sizeY];
 		entityList = new ArrayList<>();
+		entityList.clear();
 		
 //		GeneticInfo gi = new GeneticInfo();
 //		System.out.println(gi.printGeneticInfo());
@@ -124,8 +125,10 @@ public class Environment {
 			{
 				if(map[i][j] == null)
 					sb.append(" - ");
-				else
-					sb.append(" # ");
+				else {
+					if( ((PlantCell)map[i][j]).getPlantType() == 0 )
+						sb.append(" # ");
+				}
 			}
 			sb.append("\n");
 		}
@@ -147,12 +150,33 @@ public class Environment {
 				else {
 					int entityHealth;
 					entityHealth = ((PlantCell)map[i][j]).getHealth();
-					sb.append(String.format(" %3d# ", entityHealth));
+					sb.append(String.format(" %3d", entityHealth));
+					
+					if( ((PlantCell)map[i][j]).getPlantType() == 0 )
+						sb.append("# ");
+					else if( ((PlantCell)map[i][j]).getPlantType() == 1 )
+						sb.append("+ ");
+					else if( ((PlantCell)map[i][j]).getPlantType() == 2 )
+						sb.append("& ");
 				}
 			}
 			sb.append("\n");
 		}
 		
 		return sb.toString();
+	}
+	
+	public PlantCell getSamplePlantCell() {
+		for(EnvEntity e: entityList) {
+			if(e.getClass() == Plant.class) {
+				ArrayList<PlantCell> cellList = ((Plant)e).getCellList();
+				
+				if(cellList.size() > 0)
+					return cellList.get(0);
+				System.out.println("Cell list is empty!");
+			}
+		}
+		System.out.println("Could not find plantplant!");
+		return null;
 	}
 }

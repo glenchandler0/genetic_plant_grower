@@ -8,21 +8,35 @@ def convertDataToImg(data, xSize, ySzie, filename):
     im= Image.new('RGB', (xSize, ySize))
     pixel_list = []
 
+    count = 0
     for row in data:
         for ch in row:
-            if('#' in ch):
+            if(ch == ''):
+                ch = ch
+                continue
+            if( (count % xSize) < 3 and count < (xSize * 3) ):
+                pixel_list.append((255, 255, 0))
+            elif('#' in ch):
                 num = int(ch[:-1])
-                gVal = 200 - (num * 0.7)
+                gVal = 180 - (num * 0.7)
                 #G value between 60 and 200
                 pixel_list.append((118, int(gVal), 66))
-                # print("Found plant!")
+            elif('+' in ch):
+                num = int(ch[:-1])
+                gVal = 255 - (num * 0.7)
+                #G value between 60 and 200
+                pixel_list.append((118, int(gVal), 66))
+            elif('&' in ch):
+                num = int(ch[:-1])
+                bVal = 255 - (num * 0.7)
+                gVal = 130 + (num * 0.3)
+                #G value between 60 and 200
+                pixel_list.append((255, int(gVal), int(bVal)))
             elif(ch == '----'):
                 pixel_list.append((174, 242, 237))
-                # print("Found NonPlant!")
-            elif(ch == ''):
-                ch = ch
             else:
                 print("Found something weird: ", ch)
+            count = count + 1
 
     im.putdata(pixel_list)
     im.save('imgs/img_'+filename.replace(".csv", "")+'.png') # Make this correspond to some index

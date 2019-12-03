@@ -15,7 +15,7 @@ public class PlantCell extends EnvObject{
 	
 	GeneticInfo genes; //Will be used for making decisions
 	
-	//TODO Add type of plant
+	int plantCellType; //0- stem, 1-leaf, 2-flower
 	
 	
 	public PlantCell(Plant plantPointer, GeneticInfo genes, int parentX, int parentY)
@@ -27,13 +27,14 @@ public class PlantCell extends EnvObject{
 		
 		health = 5; //TODO: Make random
 		
+		this.plantCellType = 0; //TODO: Default plant type, is this okay?
 		this.genes = genes;
 		this.myPlant = plantPointer;
 		this.parentX = parentX;
 		this.parentY = parentY;
 	}
 	
-	public PlantCell(Plant plantPointer, GeneticInfo genes, int parentX, int parentY, int x, int y, int health)
+	public PlantCell(Plant plantPointer, GeneticInfo genes, int plantType, int parentX, int parentY, int x, int y, int health)
 	{
 		this.x = x;
 		this.y = y;
@@ -42,11 +43,25 @@ public class PlantCell extends EnvObject{
 		this.health = health; //TODO: Make random
 		
 		this.genes = genes;
+		this.plantCellType = plantType;
 		this.myPlant = plantPointer;
 		this.parentX = parentX;
 		this.parentY = parentY;
+		
+		if(this.plantCellType == 0) {
+			; //Do nothing
+		}
+		else if(this.plantCellType == 1) {
+			this.health *= 0.8;
+			this.genes.applyLeafModifiers();
+		}
+		else if(this.plantCellType == 2) {
+			this.health *= 0.7;
+			this.genes.applyFlowerModifiers();
+		}
 	}
 	
+	//Decodes genetics into specific action
 	public PlantCell doAction()
 	{
 		//Will handle cells passively interacting with the environment
@@ -58,9 +73,11 @@ public class PlantCell extends EnvObject{
 		
 		//Get direction based on action
 		int direction = -1;
+		int newCellType = -1;
 		if(chooseAction == 0) {
 			direction = genes.chooseGrowDirection();
-			//System.out.print("Chose to grow ");
+			newCellType = genes.chooseCellType();
+//			System.out.print("Chose to grow cell: " + newCellType);
 		}
 		else if(chooseAction == 1) {
 			direction = genes.chooseShareDirection();
@@ -115,7 +132,7 @@ public class PlantCell extends EnvObject{
 		
 		//Apply action with location
 		if(chooseAction == 0) {
-			return growAdjacent(newX, newY);
+			return growAdjacent(newX, newY, newCellType);
 		}
 		else if(chooseAction == 1) {
 			return shareHealth(newX, newY);
@@ -167,7 +184,7 @@ public class PlantCell extends EnvObject{
 		return null;
 	}
 	
-	public PlantCell growAdjacent(int newX, int newY)
+	public PlantCell growAdjacent(int newX, int newY, int newCellType)
 	{
 		int sacrificeAmnt = (int) (this.health * genes.getEnergyGrowAmnt()); //Should always be positive
 		
@@ -179,9 +196,10 @@ public class PlantCell extends EnvObject{
 		// Make sure proposed spot is in bounds, then ensure that there isn't an entity there already
 		if(newX > 0 && newX < myPlant.getEnvironment().map.length && newY > 0 && newY < myPlant.getEnvironment().map[0].length) {
 			if(myPlant.getEnvironment().map[newX][newY] == null)
-			{
-				//TODO: Check 'genes' addition
-				newPlant = new PlantCell(myPlant, genes, this.x, this.y, newX, newY, sacrificeAmnt);
+			{				
+				//TODO: Test copying genes, originally is a reference to original
+				GeneticInfo newGenes = new GeneticInfo(genes);
+				newPlant = new PlantCell(myPlant, newGenes, newCellType, this.x, this.y, newX, newY, sacrificeAmnt);
 				
 				myPlant.getEnvironment().map[newX][newY] = newPlant;
 				
@@ -193,20 +211,35 @@ public class PlantCell extends EnvObject{
 		return null;
 	}
 	
-	private void interactWithEnvironment() {
-		//TODO: Add conditions for type of plant 
-		
+	private void interactWithEnvironment() {		
 		//System.out.printf("\tCell (%d,%d) ", this.x, this.y);
 		int sharedAmnt = Environment.getSun(this.x, this.y);
-		this.health += sharedAmnt;
 		//System.out.printf(" got %d health from the sun\n", sharedAmnt);
 		
 		Random rand = new Random();
 		//System.out.printf("\tCell (%d,%d) ", this.x, this.y);
 		int starvedAmnt = 5;
 //		if(rand.nextInt(5) == 0)
-		this.health -= starvedAmnt;
 		//System.out.printf(" starved %d health from the sun\n", starvedAmnt);
+		
+		//TODO: Add modifiers for leaves and flowers
+		if(this.plantCellType == 0) {
+			sharedAmnt *= 0.75;
+			starvedAmnt *= 1;
+		}
+		else if(this.plantCellType == 1) {
+			sharedAmnt *= 1.5;
+			starvedAmnt *= 1.7;
+		}
+		else if(this.plantCellType == 2) {
+			sharedAmnt *= 1.7;
+			starvedAmnt *= 2.5;
+		}
+		
+		int num = rand.nextInt(5);
+		if(num != 0)
+			this.health += sharedAmnt;
+		this.health -= starvedAmnt;
 	}
 	
 	//TODO: Remove self function
@@ -224,6 +257,8 @@ public class PlantCell extends EnvObject{
 	}
 	
 	//Setters and getters
+	public GeneticInfo getGenes() { return new GeneticInfo(this.genes); }
+	public int getPlantType() { return this.plantCellType; }
 	public int getX() { return this.x; }
 	public int getY() { return this.y; }
 	public int getHealth() { return this.health; }

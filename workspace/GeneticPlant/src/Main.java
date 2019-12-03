@@ -1,4 +1,5 @@
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -9,11 +10,18 @@ import java.io.IOException;
 // *- slideshow program
 // - 
 //
+// Adding different types of plants
+// *- give children a copy of your genes
+// *- when giving certain type of new plant, modify child genetics
+// ~- change starvation and sun absorption
+// *- ensure random selection of type of plant
+// - stems can only absorb a small amount of sun
+//
 // !- gene encoding and decoding
-// !- private class for environment run - extracting info
-//		-Just use the environment class
+// *- private class for environment run - extracting info
+//		*-Just use the environment class
 // *- functions to find best genes
-//		-Randomly
+//		*-Randomly
 //		-w/ genetic algorithm
 
 //TODO: What to tweak to create good evolution environment
@@ -21,6 +29,7 @@ import java.io.IOException;
 //	- Starvation amount
 //	- Sunlight health amount
 //	- Evaluation metric
+//	- "cloudy day" mechanic where sun turns off
 
 public class Main {
 	public static void main(String[] args) throws IOException
@@ -28,26 +37,35 @@ public class Main {
 		System.out.println("Hello world!");
 		
 		//Choose main function here
-		findBestRandomGene();
-//		printBestPlant();
+//		findBestRandomGene(true);
+		
+		GeneticInfo gi = new GeneticInfo();
+//		gi.randomizeGenes();
+		printBestPlant(gi, true);
+		
 //		runApplicationOld();
 	}
 	
 	//---------- Potential main functions to run ----------
-	private static void findBestRandomGene() {
-		StringBuilder sb = new StringBuilder();
-		double bestScore = bestGeneRandom(1000, 100, 10, sb);
+	private static void findBestRandomGene(boolean trackPlant) throws IOException {
+		Environment bestEnv = bestGeneRandom(500, 50, 20, trackPlant);
+		double bestScore = evaluateEnvironment(bestEnv);
 		
-		System.out.print(sb.toString());
+		PlantCell sampleCell = bestEnv.getSamplePlantCell();
+		if(sampleCell != null)
+			System.out.print(sampleCell.getGenes().printGeneticInfo());
+		System.out.print(bestEnv.getHealthString());
 		System.out.println("Best Score: " + bestScore);
 	}
 	
-	private static void printBestPlant() throws IOException {
-		GeneticInfo gi = new GeneticInfo();
-		
-		StringBuilder bestMap = new StringBuilder();
-		double bestScore = geneBestScore(gi, 100, 20, bestMap);
-		System.out.print(bestMap.toString());
+	private static void printBestPlant(GeneticInfo gi, boolean trackPlant) throws IOException {		
+		Environment bestEnv = geneBestScore(gi, 1000, 20, trackPlant);
+		double bestScore = evaluateEnvironment(bestEnv);
+
+		PlantCell sampleCell = bestEnv.getSamplePlantCell();
+		if(sampleCell != null)
+			System.out.print(sampleCell.getGenes().printGeneticInfo());
+		System.out.print(bestEnv.getHealthString());
 		System.out.println("Best Score: " + bestScore);
 	}
 	
@@ -84,6 +102,7 @@ public class Main {
 	}
 	
 	//--------- Meta testing functions ---------
+	
 	private static double totalHealth(Environment e) {
 		//Just count all cells
 		double count = 0;
@@ -113,6 +132,7 @@ public class Main {
 	
 	//TODO: Metric that reflects plant-like structures?
 	//	-Maybe high ratio of #cells : total health??
+	//	-Maybe biodiversity score?
 	private static double evaluateEnvironment(Environment e) {
 		double numCells = totalCells(e);
 		double totalHealthAdj = totalHealth(e);
@@ -123,7 +143,8 @@ public class Main {
 	}
 	
 	//------------- Meta testing ----------------
-	private static double runEnvironment(Environment e, int numIterations) {
+	
+	private static double runEnvironment(Environment e, int numIterations, boolean trackPlant) throws IOException {
 //		System.out.println(e.getMapString());
 		
 		for(int i = 0; i < numIterations; i++)
@@ -131,12 +152,15 @@ public class Main {
 			e.iterate();
 			e.pruneTrees();
 			
-//			String mapString = e.getHealthString();
 //			System.out.println(mapString);
 			
-//			BufferedWriter writer = new BufferedWriter(new FileWriter("map_files/map" + i + ".csv"));
-//		    writer.write(mapString);
-//		    writer.close();
+			if(trackPlant == true) {
+				String mapString = e.getHealthString();
+				BufferedWriter writer = new BufferedWriter(new FileWriter("map_files/map" + i + ".csv"));
+				writer.flush();
+			    writer.write(mapString);
+			    writer.close();
+			}
 		}
 		
 //		System.out.print(e.getHealthString());
@@ -147,46 +171,72 @@ public class Main {
 		return evaluateEnvironment(e);
 	}
 	
-	//TODO: Function to get best iteration of a given gene
-	private static double geneBestScore(GeneticInfo gi, int numTrials, int numIterations, StringBuilder bestMapString) {
+	//Function to get best iteration of a given gene
+	private static Environment geneBestScore(GeneticInfo gi, int numTrials, int numIterations, /*StringBuilder bestMapString,*/ boolean trackPlant) throws IOException {
 		
+		Environment bestEnv = null;
 		double bestScore = 0;
-		String bestMap = "no map chosen!";
 		for(int i = 0; i < numTrials; i++) {
 			Environment e = new Environment(gi);
 			
-			double score = runEnvironment(e, numIterations);
+			double score = runEnvironment(e, numIterations, trackPlant);
+			
 			if(score > bestScore) {
 				bestScore = score;
-				bestMap = e.getHealthString();
+				bestEnv = e;
+				
+				if(trackPlant) {
+					runMarkBestFiles(numIterations);
+				}
 			}
 		}
 		
-		bestMapString.append(bestMap);
-		
-		return bestScore;
+		return bestEnv;
 	}
 	
-	//TODO: Function to iterate over multiple versions of a gene
-	private static double bestGeneRandom(int numGenes, int numTrials, int numIterations, StringBuilder bestMap) {
+	//Function to iterate over multiple versions of a gene
+	//TODO: Genetic cross-over functionality
+	private static Environment bestGeneRandom(int numGenes, int numTrials, int numIterations, /*StringBuilder bestMap,*/ boolean trackPlant) throws IOException {
 		GeneticInfo gi = new GeneticInfo();
 		
+		Environment bestEnv = null;
 		double bestScore = 0;
-		String bestMapString = "no map chosen!";
 		for(int i = 0; i < numGenes; i++) {
 			gi.randomizeGenes();
 			
-			StringBuilder mapRes = new StringBuilder();
-			double score = geneBestScore(gi, numTrials, numIterations, mapRes);
+			Environment currEnv = geneBestScore(gi, numTrials, numIterations, trackPlant);
+			double score = evaluateEnvironment(currEnv);
 			
 			if(score > bestScore) {
 				bestScore = score;
-				bestMapString = mapRes.toString();
+				bestEnv = currEnv;
+				
+				if(trackPlant) {
+					geneMarkBestFiles(numIterations);
+				}
 			}
 		}
 		
-		bestMap.append(bestMapString);
+		return bestEnv;
+	}
+	
+	// ------------------------ RENAME FUNCTIONS ------------------------------
+	private static void runMarkBestFiles(int numIterations) {
 		
-		return bestScore;
+		for(int i = 0; i < numIterations; i++) {
+			File fOld = new File("map_files/map" + i + ".csv");
+			File fNew = new File("map_files/bestRunMap" + i + ".csv");
+			
+			fOld.renameTo(fNew);
+		}
+	}
+	private static void geneMarkBestFiles(int numIterations) {
+		
+		for(int i = 0; i < numIterations; i++) {
+			File fOld = new File("map_files/bestRunMap" + i + ".csv");
+			File fNew = new File("map_files/bestGeneMap" + i + ".csv");
+			
+			fOld.renameTo(fNew);
+		}
 	}
 }

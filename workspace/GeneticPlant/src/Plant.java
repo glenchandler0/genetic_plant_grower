@@ -18,9 +18,9 @@ public class Plant implements EnvEntity {
 		totalHealth = 0;
 		
 		//TODO: Check - First cell gets first genetic info, rest is inherited by parent
-		listOfCells.add(new PlantCell(this, gi, -1,-1, environmentPointer.map.length - 1, 5, 10));
+		listOfCells.add(new PlantCell(this, gi, 0, -1,-1, environmentPointer.map.length - 1, 8, 10));
 		
-		listOfCells.add(new PlantCell(this, gi, -1,-1, environmentPointer.map.length - 14, 5, 10));
+//		listOfCells.add(new PlantCell(this, gi, 0, -1,-1, environmentPointer.map.length - 14, 8, 10));
 		
 		//TODO: Remove - 4 seeds for testing
 //		listOfCells.add(new PlantCell(this, gi, -1,-1, Environment.map.length - 1, 9, 10));

@@ -6,6 +6,8 @@ import java.util.Random;
 //TODO: Remove parent relativity
 public class GeneticInfo 
 {	
+	static int minLimit = 0;
+	static int maxLimit = 200;
 	//Used for calculating distribution of direction
 	//for growing a new cell
 	int leftGrowTickets;
@@ -42,7 +44,7 @@ public class GeneticInfo
 	int leafTickets;
 	int flowerTickets;
 	
-	//----- Constructors ----
+//----- Constructors ----
 //	public GeneticInfo(ArrayList<Integer> distributions) {
 //		
 //	}
@@ -50,6 +52,40 @@ public class GeneticInfo
 	//By default gives all tickets even distribution
 	public GeneticInfo() {
 		setOptimalGenes();
+	}
+	
+	//Copies an existing genetic strand
+	public GeneticInfo(GeneticInfo gi) {
+		leftGrowTickets = gi.leftGrowTickets;
+		rightGrowTickets = gi.rightGrowTickets;
+		upGrowTickets = gi.upGrowTickets;
+		downGrowTickets = gi.downGrowTickets;
+		xParentGrowTickets = gi.xParentGrowTickets;
+		xAwayParentGrowTickets = gi.xAwayParentGrowTickets; //TODO: Remove
+		yParentGrowTickets = gi.yParentGrowTickets;
+		yAwayParentGrowTickets = gi.yAwayParentGrowTickets; //TODO: Remove
+		
+		leftShareTickets = gi.leftShareTickets;
+		rightShareTickets = gi.rightShareTickets;
+		upShareTickets = gi.upShareTickets;
+		downShareTickets = gi.downShareTickets;
+		xParentShareTickets = gi.xParentShareTickets;
+		xAwayParentShareTickets = gi.xAwayParentShareTickets; //TODO: Remove
+		yParentShareTickets = gi.yParentShareTickets;
+		yAwayParentShareTickets = gi.yAwayParentShareTickets; //TODO: Remove
+		
+		//How much energy would be shared to adjacent cell
+		energyShareAmnt = gi.energyShareAmnt;
+		//How much energy would be given to newly grown cell
+		energyGrowAmnt = gi.energyGrowAmnt;
+		
+		growTickets = gi.growTickets;
+		growTickets = gi.growTickets;
+		obstainTickets = gi.obstainTickets;
+		
+		stemTickets = gi.stemTickets;
+		leafTickets = gi.leafTickets;
+		flowerTickets = gi.flowerTickets;
 	}
 	
 	public void setControlGenes() {
@@ -85,40 +121,40 @@ public class GeneticInfo
 		flowerTickets= 50;
 	}
 	
-	//----- Functionality ------
+//----- Functionality ------
 	public void randomizeGenes() {
 		Random rand = new Random();
 		
-		leftGrowTickets = rand.nextInt(200);
-		rightGrowTickets = rand.nextInt(200);
-		upGrowTickets = rand.nextInt(200);
-		downGrowTickets = rand.nextInt(200);
-		xParentGrowTickets = rand.nextInt(200);
-		xAwayParentGrowTickets = rand.nextInt(200); //TODO: Remove
-		yParentGrowTickets = rand.nextInt(200);
-		yAwayParentGrowTickets = rand.nextInt(200); //TODO: Remove
+		leftGrowTickets = rand.nextInt(maxLimit);
+		rightGrowTickets = rand.nextInt(maxLimit);
+		upGrowTickets = rand.nextInt(maxLimit);
+		downGrowTickets = rand.nextInt(maxLimit);
+		xParentGrowTickets = rand.nextInt(maxLimit);
+		xAwayParentGrowTickets = rand.nextInt(maxLimit); //TODO: Remove
+		yParentGrowTickets = rand.nextInt(maxLimit);
+		yAwayParentGrowTickets = rand.nextInt(maxLimit); //TODO: Remove
 		
-		leftShareTickets = rand.nextInt(200);
-		rightShareTickets = rand.nextInt(200);
-		upShareTickets = rand.nextInt(200);
-		downShareTickets = rand.nextInt(200);
-		xParentShareTickets = rand.nextInt(200);
-		xAwayParentShareTickets = rand.nextInt(200); //TODO: Remove
-		yParentShareTickets = rand.nextInt(200);
-		yAwayParentShareTickets = rand.nextInt(200); //TODO: Remove
+		leftShareTickets = rand.nextInt(maxLimit);
+		rightShareTickets = rand.nextInt(maxLimit);
+		upShareTickets = rand.nextInt(maxLimit);
+		downShareTickets = rand.nextInt(maxLimit);
+		xParentShareTickets = rand.nextInt(maxLimit);
+		xAwayParentShareTickets = rand.nextInt(maxLimit); //TODO: Remove
+		yParentShareTickets = rand.nextInt(maxLimit);
+		yAwayParentShareTickets = rand.nextInt(maxLimit); //TODO: Remove
 		
 		//How much energy would be shared to adjacent cell
 		energyShareAmnt = rand.nextDouble();
 		//How much energy would be given to newly grown cell
 		energyGrowAmnt = rand.nextDouble();
 		
-		growTickets = rand.nextInt(200);
-		shareTickets = rand.nextInt(200);
-		obstainTickets = rand.nextInt(200);
+		growTickets = rand.nextInt(maxLimit);
+		shareTickets = rand.nextInt(maxLimit);
+		obstainTickets = rand.nextInt(maxLimit);
 		
-		stemTickets = rand.nextInt(200);
-		leafTickets = rand.nextInt(200);
-		flowerTickets= rand.nextInt(200);
+		stemTickets = rand.nextInt(maxLimit);
+		leafTickets = rand.nextInt(maxLimit);
+		flowerTickets= rand.nextInt(maxLimit);
 	}
 	
 	public void setOptimalGenes() {
@@ -126,32 +162,34 @@ public class GeneticInfo
 		rightGrowTickets = 50;
 		upGrowTickets = 200;
 		downGrowTickets = 10;
-		xParentGrowTickets = 10;
-		xAwayParentGrowTickets = 50; //TODO: Remove
-		yParentGrowTickets = 10;
+		//
+		xParentGrowTickets = 5;
+		xAwayParentGrowTickets = 75; //TODO: Remove
+		yParentGrowTickets = 5;
 		yAwayParentGrowTickets = 100; //TODO: Remove
 		
 		leftShareTickets = 50;
 		rightShareTickets = 50;
 		upShareTickets = 10;
-		downShareTickets = 100;
+		downShareTickets = 75;
+		//
 		xParentShareTickets = 100;
 		xAwayParentShareTickets = 10; //TODO: Remove
 		yParentShareTickets = 100;
-		yAwayParentShareTickets = 10; //TODO: Remove
+		yAwayParentShareTickets = 25; //TODO: Remove
 		
 		//How much energy would be shared to adjacent cell
-		energyShareAmnt = 0.1;
+		energyShareAmnt = 0.20;
 		//How much energy would be given to newly grown cell
 		energyGrowAmnt = 0.25;
 		
-		growTickets = 50;
-		shareTickets = 100;
-		obstainTickets = 100;
+		growTickets = 100;
+		shareTickets = 25;
+		obstainTickets = 50;
 		
-		stemTickets = 50;
+		stemTickets = 20;
 		leafTickets = 50;
-		flowerTickets= 50;
+		flowerTickets= 65;
 	}
 	
 	//To be used in collection sort
@@ -194,6 +232,8 @@ public class GeneticInfo
 		
 		//Random ticket number is somewhere between 0 and maxNumTickets
 		int maxTickets = tickets.get(tickets.size() - 1).getNumTickets();
+		if(maxTickets < 1)
+			maxTickets = 1;
 		Random rand = new Random();
 		int chosenTicket = rand.nextInt(maxTickets);
 		
@@ -211,6 +251,12 @@ public class GeneticInfo
 				return tickets.get(i).getId();
 		}
 		
+		//If bucket searching fails, look for exact matches
+		for(int i = 0; i < tickets.size(); i++) {
+			if(chosenTicket == tickets.get(i).getNumTickets())
+				return tickets.get(i).getId();
+		}
+		
 		System.out.println("ticket selector ERROR");
 		return -1; //Error, could not select ticket
 	}
@@ -219,7 +265,7 @@ public class GeneticInfo
 	
 	
 	
-	// ------------ Functions for interpreting genetics ----------
+// ------------ Functions for interpreting genetics ----------
 	public int chooseAction() {
 		//Since chooseTicket takes 4 arguments
 		ArrayList<Integer> ticketList = new ArrayList<Integer>();
@@ -227,7 +273,11 @@ public class GeneticInfo
 		ticketList.add(shareTickets);
 		ticketList.add(obstainTickets);
 		
-		return chooseTicket(ticketList);
+		int chosenTicket = chooseTicket(ticketList);
+		if(chosenTicket < 0) {
+			System.out.println("Error choosing ticket in chooseAction!");
+		}
+		return chosenTicket;
 	}
 	
 	public int chooseGrowDirection() {		
@@ -241,7 +291,25 @@ public class GeneticInfo
 		ticketList.add(yParentGrowTickets);
 		ticketList.add(yAwayParentGrowTickets); //TODO: Remove
 		
-		return chooseTicket(ticketList);
+		int chosenTicket = chooseTicket(ticketList);
+		if(chosenTicket < 0) {
+			System.out.println("Error choosing ticket in chooseAction!");
+		}
+		return chosenTicket;
+	}
+	
+	public int chooseCellType() {
+		//Since chooseTicket takes 4 arguments
+		ArrayList<Integer> ticketList = new ArrayList<Integer>();
+		ticketList.add(stemTickets);
+		ticketList.add(leafTickets);
+		ticketList.add(flowerTickets);
+		
+		int chosenTicket = chooseTicket(ticketList);
+		if(chosenTicket < 0) {
+			System.out.println("Error choosing ticket in chooseAction!");
+		}
+		return chosenTicket;
 	}
 	
 	public int chooseShareDirection() {		
@@ -255,33 +323,47 @@ public class GeneticInfo
 		ticketList.add(yParentShareTickets);
 		ticketList.add(yAwayParentShareTickets); //TODO: Remove
 		
-		return chooseTicket(ticketList);
+		int chosenTicket = chooseTicket(ticketList);
+		if(chosenTicket < 0) {
+			System.out.println("Error choosing ticket in chooseAction!");
+		}
+		return chosenTicket;
 	}
 	
-	// -------- House Keeping functions --------
+// -------- House Keeping functions --------
 	public String printGeneticInfo() {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append("leftGrowTickets:\t" + leftGrowTickets + "\n");
 		sb.append("rightGrowTickets:\t" + rightGrowTickets + "\n");
 		sb.append("upGrowTickets:\t\t" + upGrowTickets + "\n");
-		sb.append("downGrowTickets:\t" + downGrowTickets + "\n");
+		sb.append("downGrowTickets:\t" + downGrowTickets + "\n\n");
+		
+		sb.append("xParentGrowTickets:\t" + xParentGrowTickets + "\n");
+		sb.append("xAwayParentGrowTickets:\t" + xAwayParentGrowTickets + "\n");
+		sb.append("yParentGrowTickets:\t\t" + yParentGrowTickets + "\n");
+		sb.append("yAwayParentGrowTickets:\t" + yAwayParentGrowTickets + "\n\n");
 		
 		sb.append("leftShareTickets:\t" + leftShareTickets + "\n");
 		sb.append("rightShareTickets:\t" + rightShareTickets + "\n");
-		sb.append("upGrowTickets:\t\t" + upGrowTickets + "\n");
-		sb.append("downGrowTickets:\t" + downShareTickets + "\n");
+		sb.append("upShareTickets:\t\t" + upGrowTickets + "\n");
+		sb.append("downShareTickets:\t" + downShareTickets + "\n\n");
+		
+		sb.append("xParentShareTickets:\t" + xParentShareTickets + "\n");
+		sb.append("xAwayParentShareTickets:\t" + xAwayParentShareTickets + "\n");
+		sb.append("yParentShareTickets:\t\t" + yParentShareTickets + "\n");
+		sb.append("yAwayParentShareTickets:\t" + yAwayParentShareTickets + "\n\n");
 		
 		sb.append("energyGrowAmnt:\t\t" + energyGrowAmnt + "\n");
-		sb.append("energyShareAmnt:\t" + energyShareAmnt + "\n");
+		sb.append("energyShareAmnt:\t" + energyShareAmnt + "\n\n");
 		
 		sb.append("growTickets:\t\t" + growTickets + "\n");
 		sb.append("shareTickets:\t\t" + shareTickets + "\n");
-		sb.append("obstainTickets:\t\t" + obstainTickets + "\n");
+		sb.append("obstainTickets:\t\t" + obstainTickets + "\n\n");
 		
 		sb.append("stemTickets:\t\t" + stemTickets + "\n");
 		sb.append("leafTickets:\t\t" + leafTickets + "\n");
-		sb.append("flowerTickets:\t\t" + flowerTickets + "\n");
+		sb.append("flowerTickets:\t\t" + flowerTickets + "\n\n");
 		
 		return sb.toString();
 	}
@@ -294,7 +376,35 @@ public class GeneticInfo
 		return this.energyGrowAmnt;
 	}
 	
-	//------- Porting functions -------
+//------- Modification functions -------
+	public void applyLeafModifiers() {
+		if(this.growTickets/1.2 >= minLimit)
+			this.growTickets /= 1.2;
+		if(this.shareTickets*1.2 < maxLimit) {
+			this.shareTickets *= 1.2;
+		}
+		if(this.obstainTickets*1.2 < maxLimit) {
+			this.obstainTickets *= 1.2;
+		}
+		this.stemTickets = 0;
+		this.leafTickets = 10;
+		this.flowerTickets = 0;
+	}
+	public void applyFlowerModifiers() {
+		if(this.growTickets / 2 >= minLimit)
+			this.growTickets /= 2;
+		if(this.shareTickets * 1.3 < maxLimit) {
+			this.shareTickets *= 1.3;
+		}
+		if(this.obstainTickets / 1.3 < maxLimit) {
+			this.obstainTickets /= 1.3;
+		}
+		this.stemTickets = 0;
+		this.leafTickets = 0;
+		this.flowerTickets = 10;
+	}
+	
+//------- Porting functions -------
 	//TODO: Implement probably by comma seperated integers
 	public static int[] encodeGenes() {
 		return new int[0];
@@ -304,5 +414,5 @@ public class GeneticInfo
 		return null;
 	}
 	
-	//-------- Functions for genetic encoding ------
+//-------- Functions for genetic encoding ------
 }
