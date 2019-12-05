@@ -39,6 +39,7 @@ def convertDataToImg(data, xSize, ySzie, filename):
             count = count + 1
 
     im.putdata(pixel_list)
+    im = im.resize((500,500))
     im.save('imgs/img_'+filename.replace(".csv", "")+'.png') # Make this correspond to some index
 
 if __name__ == "__main__":

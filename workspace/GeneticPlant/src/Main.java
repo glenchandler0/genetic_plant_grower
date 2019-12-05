@@ -2,6 +2,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 //TODO: Checklist
 // *- Pruning method
@@ -15,7 +16,7 @@ import java.io.IOException;
 // *- when giving certain type of new plant, modify child genetics
 // ~- change starvation and sun absorption
 // *- ensure random selection of type of plant
-// - stems can only absorb a small amount of sun
+// *- stems can only absorb a small amount of sun
 //
 // !- gene encoding and decoding
 // *- private class for environment run - extracting info
@@ -30,9 +31,15 @@ import java.io.IOException;
 //	- Sunlight health amount
 //	- Evaluation metric
 //	- "cloudy day" mechanic where sun turns off
+//	- Add metric to get most average version of a gene
 
 public class Main {
-	public static void main(String[] args) throws IOException
+	public static ArrayList<Double> dataPts;
+	static final int numGenes = 1000;
+	static final int numSamples = 10000;
+	static final int numSteps = 40;
+	
+	public static void main(String[] args) throws Exception
 	{
 		System.out.println("Hello world!");
 		
@@ -40,27 +47,38 @@ public class Main {
 //		findBestRandomGene(true);
 		
 		GeneticInfo gi = new GeneticInfo();
+		gi.setControlGenes();
+//		gi.stringImport("  9,157,102, 30, 34,  8, 75, 20,152,153, 66, 13, 34,184, 23,154, 49, 56,108,151,172, 79, 15, 64,");
+//		gi.setOptimalGenes();
 //		gi.randomizeGenes();
 		printBestPlant(gi, true);
+//		System.out.println(runEnvironment(new Environment(gi), 20, true));
 		
 //		runApplicationOld();
 	}
 	
 	//---------- Potential main functions to run ----------
 	private static void findBestRandomGene(boolean trackPlant) throws IOException {
-		Environment bestEnv = bestGeneRandom(500, 50, 20, trackPlant);
+		Environment bestEnv = bestGeneRandom(numGenes, numSamples, numSteps, trackPlant);
 		double bestScore = evaluateEnvironment(bestEnv);
 		
 		PlantCell sampleCell = bestEnv.getSamplePlantCell();
-		if(sampleCell != null)
-			System.out.print(sampleCell.getGenes().printGeneticInfo());
+		GeneticInfo bestGenes = sampleCell.getGenes();
+		if(sampleCell != null) {
+			System.out.println(bestGenes.printGeneticInfo());
+			System.out.println(GeneticInfo.stringExport(bestGenes));
+		}
+		
 		System.out.print(bestEnv.getHealthString());
 		System.out.println("Best Score: " + bestScore);
 	}
 	
 	private static void printBestPlant(GeneticInfo gi, boolean trackPlant) throws IOException {		
-		Environment bestEnv = geneBestScore(gi, 1000, 20, trackPlant);
+		Environment bestEnv = geneBestScore(gi, numSamples, numSteps, trackPlant);
 		double bestScore = evaluateEnvironment(bestEnv);
+		
+		//TODO: Remove
+		EnvStats.breakDownSeries(dataPts);
 
 		PlantCell sampleCell = bestEnv.getSamplePlantCell();
 		if(sampleCell != null)
@@ -89,8 +107,8 @@ public class Main {
 //		    writer.close();
 		}
 		
-		System.out.printf("Total cells: %.2f\n", totalCells(e));
-		System.out.printf("Total cell health: %.2f\n", totalHealth(e));
+//		System.out.printf("Total cells: %.2f\n", totalCells(e));
+//		System.out.printf("Total cell health: %.2f\n", totalHealth(e));
 		System.out.printf("Env Evaluation: %.4f\n", evaluateEnvironment(e));
 	}
 	
@@ -99,47 +117,6 @@ public class Main {
 		
 		int growDirection = gi.chooseShareDirection();
 		System.out.printf("Chosen action: %d\n",  growDirection);
-	}
-	
-	//--------- Meta testing functions ---------
-	
-	private static double totalHealth(Environment e) {
-		//Just count all cells
-		double count = 0;
-		
-		for(int i = 0; i < e.map.length; i++) {
-			for(int j = 0; j < e.map[i].length; j++) {
-				if(e.map[i][j] != null)
-					count += ((PlantCell)e.map[i][j]).getHealth();
-			}
-		}
-		
-		return count;
-	}
-	private static double totalCells(Environment e) {
-		//Just count all cells
-		double count = 0;
-		
-		for(int i = 0; i < e.map.length; i++) {
-			for(int j = 0; j < e.map[i].length; j++) {
-				if(e.map[i][j] != null)
-					count++;
-			}
-		}
-		
-		return count;
-	}
-	
-	//TODO: Metric that reflects plant-like structures?
-	//	-Maybe high ratio of #cells : total health??
-	//	-Maybe biodiversity score?
-	private static double evaluateEnvironment(Environment e) {
-		double numCells = totalCells(e);
-		double totalHealthAdj = totalHealth(e);
-		
-		return totalHealthAdj + numCells/totalHealthAdj;
-//		return 1/(Math.pow((numCells - totalHealthAdj + 1), 2));
-//		return numCells;
 	}
 	
 	//------------- Meta testing ----------------
@@ -174,12 +151,15 @@ public class Main {
 	//Function to get best iteration of a given gene
 	private static Environment geneBestScore(GeneticInfo gi, int numTrials, int numIterations, /*StringBuilder bestMapString,*/ boolean trackPlant) throws IOException {
 		
+		dataPts = new ArrayList<>();
+		
 		Environment bestEnv = null;
 		double bestScore = 0;
 		for(int i = 0; i < numTrials; i++) {
 			Environment e = new Environment(gi);
 			
 			double score = runEnvironment(e, numIterations, trackPlant);
+			dataPts.add(score);
 			
 			if(score > bestScore) {
 				bestScore = score;
@@ -197,6 +177,8 @@ public class Main {
 	//Function to iterate over multiple versions of a gene
 	//TODO: Genetic cross-over functionality
 	private static Environment bestGeneRandom(int numGenes, int numTrials, int numIterations, /*StringBuilder bestMap,*/ boolean trackPlant) throws IOException {
+//		EnvStats stat = new EnvStats();
+		
 		GeneticInfo gi = new GeneticInfo();
 		
 		Environment bestEnv = null;
@@ -215,9 +197,33 @@ public class Main {
 					geneMarkBestFiles(numIterations);
 				}
 			}
+			
+			if(i % 100 == 0)
+				System.out.printf("Gene %d: %.2f\n", i, score);
 		}
 		
 		return bestEnv;
+	}
+	
+	//TODO: Metric that reflects plant-like structures?
+	//	-Maybe high ratio of #cells : total health??
+	//	-Maybe biodiversity score?
+	public static double evaluateEnvironment(Environment e) {
+		double numCells = EnvStats.totalCells(e);
+		double totalHealthAdj = EnvStats.totalHealth(e);
+//		double numLeaf = EnvStats.countLeaf(e);
+//		double numFlower = EnvStats.countFlower(e);
+		double height = EnvStats.height(e);
+		
+		return 1.0 * totalHealthAdj - Math.pow((numCells / 1),3) + Math.pow((187.0 / 2 * height), 2);
+		
+//		return height;
+//		return totalHealthAdj;
+//		return -1 * (Math.pow((numLeaf - numFlower), 2));
+//		return EnvStats.height(e);
+//		return totalHealthAdj + numCells/totalHealthAdj;
+//		return 1/(Math.pow((numCells - totalHealthAdj + 1), 2));
+//		return numCells;
 	}
 	
 	// ------------------------ RENAME FUNCTIONS ------------------------------
@@ -239,4 +245,5 @@ public class Main {
 			fOld.renameTo(fNew);
 		}
 	}
+	
 }

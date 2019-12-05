@@ -176,7 +176,7 @@ public class Environment {
 				System.out.println("Cell list is empty!");
 			}
 		}
-		System.out.println("Could not find plantplant!");
+		System.out.println("Could not find plant!");
 		return null;
 	}
 }

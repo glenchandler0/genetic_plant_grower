@@ -80,7 +80,7 @@ public class GeneticInfo
 		energyGrowAmnt = gi.energyGrowAmnt;
 		
 		growTickets = gi.growTickets;
-		growTickets = gi.growTickets;
+		shareTickets = gi.shareTickets;
 		obstainTickets = gi.obstainTickets;
 		
 		stemTickets = gi.stemTickets;
@@ -164,9 +164,9 @@ public class GeneticInfo
 		downGrowTickets = 10;
 		//
 		xParentGrowTickets = 5;
-		xAwayParentGrowTickets = 75; //TODO: Remove
+		xAwayParentGrowTickets = 75; 
 		yParentGrowTickets = 5;
-		yAwayParentGrowTickets = 100; //TODO: Remove
+		yAwayParentGrowTickets = 100;
 		
 		leftShareTickets = 50;
 		rightShareTickets = 50;
@@ -174,20 +174,20 @@ public class GeneticInfo
 		downShareTickets = 75;
 		//
 		xParentShareTickets = 100;
-		xAwayParentShareTickets = 10; //TODO: Remove
+		xAwayParentShareTickets = 10; 
 		yParentShareTickets = 100;
-		yAwayParentShareTickets = 25; //TODO: Remove
+		yAwayParentShareTickets = 25;
 		
 		//How much energy would be shared to adjacent cell
 		energyShareAmnt = 0.20;
 		//How much energy would be given to newly grown cell
 		energyGrowAmnt = 0.25;
 		
-		growTickets = 100;
+		growTickets = 70;
 		shareTickets = 25;
 		obstainTickets = 50;
 		
-		stemTickets = 20;
+		stemTickets = 50;
 		leafTickets = 50;
 		flowerTickets= 65;
 	}
@@ -346,7 +346,7 @@ public class GeneticInfo
 		
 		sb.append("leftShareTickets:\t" + leftShareTickets + "\n");
 		sb.append("rightShareTickets:\t" + rightShareTickets + "\n");
-		sb.append("upShareTickets:\t\t" + upGrowTickets + "\n");
+		sb.append("upShareTickets:\t\t" + upShareTickets + "\n");
 		sb.append("downShareTickets:\t" + downShareTickets + "\n\n");
 		
 		sb.append("xParentShareTickets:\t" + xParentShareTickets + "\n");
@@ -354,8 +354,8 @@ public class GeneticInfo
 		sb.append("yParentShareTickets:\t\t" + yParentShareTickets + "\n");
 		sb.append("yAwayParentShareTickets:\t" + yAwayParentShareTickets + "\n\n");
 		
-		sb.append("energyGrowAmnt:\t\t" + energyGrowAmnt + "\n");
 		sb.append("energyShareAmnt:\t" + energyShareAmnt + "\n\n");
+		sb.append("energyGrowAmnt:\t\t" + energyGrowAmnt + "\n");
 		
 		sb.append("growTickets:\t\t" + growTickets + "\n");
 		sb.append("shareTickets:\t\t" + shareTickets + "\n");
@@ -378,40 +378,182 @@ public class GeneticInfo
 	
 //------- Modification functions -------
 	public void applyLeafModifiers() {
-		if(this.growTickets/1.2 >= minLimit)
-			this.growTickets /= 1.2;
-		if(this.shareTickets*1.2 < maxLimit) {
-			this.shareTickets *= 1.2;
+		this.growTickets -= 15;
+		this.shareTickets += 15;
+		this.obstainTickets += 10;
+		
+		if(this.growTickets < minLimit) {
+			this.growTickets = minLimit;
 		}
-		if(this.obstainTickets*1.2 < maxLimit) {
-			this.obstainTickets *= 1.2;
+		if(this.shareTickets > maxLimit) {
+			this.shareTickets = maxLimit;
 		}
+		if(this.obstainTickets > maxLimit) {
+			this.obstainTickets = maxLimit;
+		}
+		
 		this.stemTickets = 0;
 		this.leafTickets = 10;
 		this.flowerTickets = 0;
 	}
 	public void applyFlowerModifiers() {
-		if(this.growTickets / 2 >= minLimit)
-			this.growTickets /= 2;
-		if(this.shareTickets * 1.3 < maxLimit) {
-			this.shareTickets *= 1.3;
+		this.growTickets -= 30;
+		this.shareTickets += 30;
+		this.obstainTickets += 30;
+		
+		if(this.growTickets < minLimit) {
+			this.growTickets = minLimit;
 		}
-		if(this.obstainTickets / 1.3 < maxLimit) {
-			this.obstainTickets /= 1.3;
+		if(this.shareTickets > maxLimit) {
+			this.shareTickets = maxLimit;
 		}
+		if(this.obstainTickets > maxLimit) {
+			this.obstainTickets = maxLimit;
+		}
+		
 		this.stemTickets = 0;
 		this.leafTickets = 0;
 		this.flowerTickets = 10;
 	}
 	
 //------- Porting functions -------
-	//TODO: Implement probably by comma seperated integers
-	public static int[] encodeGenes() {
-		return new int[0];
+	public static String stringExport(GeneticInfo gi) {
+		int[] giArr = encodeGenes(gi);
+		return stringExport(giArr);
+	}
+	public static String stringExport(int[] input) {
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < input.length; i++) {
+			sb.append(String.format("%3d,", input[i]));
+		}
+		return sb.toString();
+	}
+	
+	public void stringImport(String input) throws Exception{
+		if(input.length() != 24*4) {
+			System.out.println("String import error! " + input.length());
+			throw new Exception();
+		}
+		
+		int[] arr = new int[24];
+		
+		int i = 0;
+		int leftPointer = 0;
+		while(i < 24) {
+			String formatted = input.substring(leftPointer, leftPointer + 3);
+			formatted = formatted.replaceAll(" ","");
+			arr[i] = (int)Integer.parseInt(formatted);
+			i++;
+			leftPointer += 4;
+		}
+		
+		arrayImport(arr);
+	}
+	public void arrayImport(int[] input) {
+		this.leftGrowTickets = input[0];
+		this.rightGrowTickets = input[1];
+		this.upGrowTickets = input[2];
+		this.downGrowTickets = input[3];
+		this.xParentGrowTickets = input[4];
+		this.xAwayParentGrowTickets = input[5]; //TODO: Remove
+		this.yParentGrowTickets = input[6];
+		this.yAwayParentGrowTickets = input[7]; //TODO: Remove
+		
+		this.leftShareTickets = input[8];
+		this.rightShareTickets = input[9];
+		this.upShareTickets = input[10];
+		this.downShareTickets = input[11];
+		this.xParentShareTickets = input[12];
+		this.xAwayParentShareTickets = input[13]; //TODO: Remove
+		this.yParentShareTickets = input[14];
+		this.yAwayParentShareTickets = input[15]; //TODO: Remove
+		
+		//How much energy would be shared to adjacent cell
+		this.energyShareAmnt = ((double)input[16]) / 100.0;
+		//How much energy would be given to newly grown cell
+		this.energyGrowAmnt = ((double)input[17]) / 100.0;
+		
+		this.growTickets = input[18];
+		this.shareTickets = input[19];
+		this.obstainTickets = input[20];
+		
+		this.stemTickets = input[21];
+		this.leafTickets = input[22];
+		this.flowerTickets = input[23];
+	}
+	
+	public static int[] encodeGenes(GeneticInfo gi) {
+		int[] retArr = new int[24];
+		
+		retArr[0] = gi.leftGrowTickets;
+		retArr[1] = gi.rightGrowTickets;
+		retArr[2] = gi.upGrowTickets;
+		retArr[3] = gi.downGrowTickets;
+		retArr[4] = gi.xParentGrowTickets;
+		retArr[5] = gi.xAwayParentGrowTickets; //TODO: Remove
+		retArr[6] = gi.yParentGrowTickets;
+		retArr[7] = gi.yAwayParentGrowTickets; //TODO: Remove
+	
+		retArr[8] = gi.leftShareTickets;
+		retArr[9] = gi.rightShareTickets;
+		retArr[10] = gi.upShareTickets;
+		retArr[11] = gi.downShareTickets;
+		retArr[12] = gi.xParentShareTickets;
+		retArr[13] = gi.xAwayParentShareTickets; //TODO: Remove
+		retArr[14] = gi.yParentShareTickets;
+		retArr[15] = gi.yAwayParentShareTickets; //TODO: Remove
+		
+		//How much energy would be shared to adjacent cell
+		retArr[16] = (int)(gi.energyShareAmnt * 100);
+		//How much energy would be given to newly grown cell
+		retArr[17] = (int)(gi.energyGrowAmnt * 100);
+		
+		retArr[18] = gi.growTickets;
+		retArr[19] = gi.shareTickets;
+		retArr[20] = gi.obstainTickets;
+		
+		retArr[21] = gi.stemTickets;
+		retArr[22] = gi.leafTickets;
+		retArr[23] = gi.flowerTickets;
+		
+		return retArr;
 	}
 	
 	public static GeneticInfo decodeGenes(int[] input) {
-		return null;
+		GeneticInfo gi = new GeneticInfo();
+		
+		gi.leftGrowTickets = input[0];
+		gi.rightGrowTickets = input[1];
+		gi.upGrowTickets = input[2];
+		gi.downGrowTickets = input[3];
+		gi.xParentGrowTickets = input[4];
+		gi.xAwayParentGrowTickets = input[5]; //TODO: Remove
+		gi.yParentGrowTickets = input[6];
+		gi.yAwayParentGrowTickets = input[7]; //TODO: Remove
+		
+		gi.leftShareTickets = input[8];
+		gi.rightShareTickets = input[9];
+		gi.upShareTickets = input[10];
+		gi.downShareTickets = input[11];
+		gi.xParentShareTickets = input[12];
+		gi.xAwayParentShareTickets = input[13]; //TODO: Remove
+		gi.yParentShareTickets = input[14];
+		gi.yAwayParentShareTickets = input[15]; //TODO: Remove
+		
+		//How much energy would be shared to adjacent cell
+		gi.energyShareAmnt = ((double)input[16]) / 100.0;
+		//How much energy would be given to newly grown cell
+		gi.energyGrowAmnt = ((double)input[17]) / 100.0;
+		
+		gi.growTickets = input[18];
+		gi.shareTickets = input[19];
+		gi.obstainTickets = input[20];
+		
+		gi.stemTickets = input[21];
+		gi.leafTickets = input[22];
+		gi.flowerTickets = input[23];
+		
+		return gi;
 	}
 	
 //-------- Functions for genetic encoding ------

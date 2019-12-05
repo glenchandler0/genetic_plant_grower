@@ -20,7 +20,21 @@ public class Plant implements EnvEntity {
 		//TODO: Check - First cell gets first genetic info, rest is inherited by parent
 		listOfCells.add(new PlantCell(this, gi, 0, -1,-1, environmentPointer.map.length - 1, 8, 10));
 		
-//		listOfCells.add(new PlantCell(this, gi, 0, -1,-1, environmentPointer.map.length - 14, 8, 10));
+//		listOfCells.add(new PlantCell(this, gi, 0, -1,-1, environmentPointer.map.length - 2, 7, 10));
+//		
+//		listOfCells.add(new PlantCell(this, gi, 0, -1,-1, environmentPointer.map.length - 3, 6, 10));
+//		listOfCells.add(new PlantCell(this, gi, 0, -1,-1, environmentPointer.map.length - 4, 5, 10));
+//		listOfCells.add(new PlantCell(this, gi, 0, -1,-1, environmentPointer.map.length - 5, 4, 10));
+//		listOfCells.add(new PlantCell(this, gi, 0, -1,-1, environmentPointer.map.length - 5, 5, 10));
+//		listOfCells.add(new PlantCell(this, gi, 0, -1,-1, environmentPointer.map.length - 6, 6, 10));
+//		listOfCells.add(new PlantCell(this, gi, 0, -1,-1, environmentPointer.map.length - 5, 7, 10));
+//		
+//		listOfCells.add(new PlantCell(this, gi, 0, -1,-1, environmentPointer.map.length - 3, 8, 10));
+//		listOfCells.add(new PlantCell(this, gi, 0, -1,-1, environmentPointer.map.length - 4, 9, 10));
+//		listOfCells.add(new PlantCell(this, gi, 0, -1,-1, environmentPointer.map.length - 5, 10, 10));
+//		listOfCells.add(new PlantCell(this, gi, 0, -1,-1, environmentPointer.map.length - 6, 9, 10));
+//		listOfCells.add(new PlantCell(this, gi, 0, -1,-1, environmentPointer.map.length - 6, 8, 10));
+//		listOfCells.add(new PlantCell(this, gi, 0, -1,-1, environmentPointer.map.length - 5, 7, 10));
 		
 		//TODO: Remove - 4 seeds for testing
 //		listOfCells.add(new PlantCell(this, gi, -1,-1, Environment.map.length - 1, 9, 10));

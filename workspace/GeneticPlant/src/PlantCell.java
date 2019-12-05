@@ -164,7 +164,8 @@ public class PlantCell extends EnvObject{
 				for(PlantCell cell: myPlant.getCellList())
 				{
 					if(cell == null) {
-						System.out.println("Found null cell in cell list while in passHealth function!");
+						//Took out this error, since it means a spawning cell died without garbage cleanup
+//						System.out.println("Found null cell in cell list while in passHealth function!");
 						continue;
 					}
 					if(cell.getX() == newX && cell.getY() == newY)
@@ -225,7 +226,7 @@ public class PlantCell extends EnvObject{
 		//TODO: Add modifiers for leaves and flowers
 		if(this.plantCellType == 0) {
 			sharedAmnt *= 0.75;
-			starvedAmnt *= 1;
+			starvedAmnt *= 0.7;
 		}
 		else if(this.plantCellType == 1) {
 			sharedAmnt *= 1.5;
